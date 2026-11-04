@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TahfidzEngine - SRS Al-Qur'an</title>
+    <style>
+        :root {
+            --primary: #059669;
+            --primary-dark: #047857;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: var(--primary-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .developer-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #e6f4ea;
+            color: var(--primary-dark);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--success);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); boxShadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1); boxShadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); boxShadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-light);
+        }
+
+        /* Heatmap Github Style */
+        .heatmap-container {
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+        .heatmap-grid {
+            display: grid;
+            grid-template-rows: repeat(7, 12px);
+            grid-auto-flow: column;
+            gap: 4px;
+        }
+        .heatmap-cell {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+            background-color: #ebedf0;
+        }
+        .heatmap-cell[data-level="1"] { background-color: #9be9a8; }
+        .heatmap-cell[data-level="2"] { background-color: #40c463; }
+        .heatmap-cell[data-level="3"] { background-color: #30a14e; }
+        .heatmap-cell[data-level="4"] { background-color: #216e39; }
+
+        form {
+            display: grid;
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        label {
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        input, select {
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary);
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-danger { background-color: var(--danger); }
+        .btn-danger:hover { background-color: #dc2626; }
+
+        .session-box {
+            text-align: center;
+        }
+
+        .session-item-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .rating-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-top: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.875rem;
+        }
+
+        th {
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .actions-cell {
+            display: flex;
+            gap: 8px;
+        }
+
+        .badge {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        .badge-due { background: #fee2e2; color: #991b1b; }
+        .badge-ok { background: #dcfce7; color: #166534; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>TahfidzEngine SRS</h1>
+            <div class="developer-badge">
+                <span class="pulse-dot"></span>
+                developer : fatur62
+            </div>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="stat-total">0</div>
+                <div class="stat-label">Total Hafalan</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="stat-due">0</div>
+                <div class="stat-label">Jatuh Tempo Hari Ini</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="stat-streak">0</div>
+                <div class="stat-label">Hari Konsisten</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Aktivitas Konsistensi (Heatmap)</h3>
+            <div class="heatmap-container" style="margin-top: 12px;">
+                <div class="heatmap-grid" id="heatmap"></div>
+            </div>
+        </div>
+
+        <div class="card" id="review-card" style="display: none;">
+            <div class="session-box">
+                <h3>Sesi Muraja'ah SM-2</h3>
+                <div class="session-item-title" id="review-title"></div>
+                <p id="review-desc" style="color: var(--text-light); margin-bottom: 1rem;"></p>
+                <div id="review-actions">
+                    <button onclick="revealReview()" id="btn-reveal">Tampilkan Detail / Evaluasi</button>
+                </div>
+                <div class="rating-buttons" id="rating-container" style="display: none;">
+                    <button class="btn-danger" onclick="submitReview(0)">Lupa (0)</button>
+                    <button style="background:var(--warning)" onclick="submitReview(3)">Susah (3)</button>
+                    <button style="background:var(--primary)" onclick="submitReview(4)">Lancar (4)</button>
+                    <button style="background:var(--success)" onclick="submitReview(5)">Sempurna (5)</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Tambah Target Hafalan Baru</h3>
+            <form id="add-form" onsubmit="addHafalan(event)">
+                <div class="form-group">
+                    <label for="title">Surah & Ayat / Halaman</label>
+                    <input type="text" id="title" required placeholder="Contoh: QS. Al-Baqarah: 1-5 / Hal 2">
+                </div>
+                <div class="form-group">
+                    <label for="category">Kategori</label>
+                    <select id="category">
+                        <option value="Ayat">Ayat / Sambung Ayat</option>
+                        <option value="Halaman">Halaman</option>
+                        <option value="Juz">Juz</option>
+                    </select>
+                </div>
+                <button type="submit">Simpan ke IndexedDB</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h3>Daftar Manajemen Hafalan</h3>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Target</th>
+                            <th>Kategori</th>
+                            <th>Interval</th>
+                            <th>Ease Factor</th>
+                            <th>Jadwal Berikutnya</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="hafalan-tbody">
+                        <!-- Dynamic Data -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Inisialisasi IndexedDB Wrapper
+        class TahfidzDB {
+            constructor() {
+                this.dbName = 'TahfidzEngineDB';
+                this.version = 1;
+                this.db = null;
+            }
+
+            async init() {
+                return new Promise((resolve, reject) => {
+                    const request = indexedDB.open(this.dbName, this.version);
+                    request.onerror = () => reject(request.error);
+                    request.onsuccess = () => {
+                        this.db = request.result;
+                        resolve(this.db);
+                    };
+                    request.onupgradeneeded = (event) => {
+                        const db = event.target.result;
+                        if (!db.objectStoreNames.contains('items')) {
+                            const store = db.createObjectStore('items', { keyPath: 'id', autoIncrement: true });
+                            store.createIndex('nextReview', 'nextReview', { unique: false });
+                        }
+                        if (!db.objectStoreNames.contains('logs')) {
+                            db.createObjectStore('logs', { keyPath: 'date' });
+                        }
+                    };
+                });
+            }
+
+            async getAllItems() {
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction(['items'], 'readonly');
+                    const store = transaction.objectStore('items');
+                    const request = store.getAll();
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = () => reject(request.error);
+                });
+            }
+
+            async addItem(item) {
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction(['items'], 'readwrite');
+                    const store = transaction.objectStore('items');
+                    const request = store.add(item);
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = () => reject(request.error);
+                });
+            }
+
+            async updateItem(item) {
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction(['items'], 'readwrite');
+                    const store = transaction.objectStore('items');
+                    const request = store.put(item);
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = () => reject(request.error);
+                });
+            }
+
+            async deleteItem(id) {
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction(['items'], 'readwrite');
+                    const store = transaction.objectStore('items');
+                    const request = store.delete(id);
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = () => reject(request.error);
+                });
+            }
+
+            async getLogs() {
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction(['logs'], 'readonly');
+                    const store = transaction.objectStore('logs');
+                    const request = store.getAll();
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = () => reject(request.error);
+                });
+            }
+
+            async logActivity(dateStr) {
+                return new Promise(async (resolve, reject) => {
+                    const logs = await this.getLogs();
+                    const existing = logs.find(l => l.date === dateStr);
+                    const count = existing ? existing.count + 1 : 1;
+
+                    const transaction = this.db.transaction(['logs'], 'readwrite');
+                    const store = transaction.objectStore('logs');
+                    const request = store.put({ date: dateStr, count });
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = () => reject(request.error);
+                });
+            }
+        }
+
+        const db = new TahfidzDB();
+        let currentQueue = [];
+        let activeItem = null;
+
+        // Algoritma SuperMemo SM-2 Core Engine
+        function calculateSM2(item, quality) {
+            let { repetition, interval, easeFactor } = item;
+
+            if (quality >= 3) {
+                if (repetition === 0) {
+                    interval = 1;
+                } else if (repetition === 1) {
+                    interval = 6;
+                } else {
+                    interval = Math.round(interval * easeFactor);
+                }
+                repetition++;
+            } else {
+                repetition = 0;
+                interval = 1;
+            }
+
+            easeFactor = easeFactor + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02));
+            if (easeFactor < 1.3) easeFactor = 1.3;
+
+            const nextReviewDate = new Date();
+            nextReviewDate.setDate(nextReviewDate.getDate() + interval);
+
+            return {
+                ...item,
+                repetition,
+                interval,
+                easeFactor: parseFloat(easeFactor.toFixed(2)),
+                nextReview: nextReviewDate.toISOString().split('T')[0]
+            };
+        }
+
+        async function initApp() {
+            try {
+                await db.init();
+                await renderUI();
+            } catch (err) {
+                console.error("Gagal menginisialisasi IndexedDB:", err);
+            }
+        }
+
+        async function renderUI() {
+            const items = await db.getAllItems();
+            const todayStr = new Date().toISOString().split('T')[0];
+
+            let total = items.length;
+            let dueItems = items.filter(i => i.nextReview <= todayStr);
+
+            document.getElementById('stat-total').innerText = total;
+            document.getElementById('stat-due').innerText = dueItems.length;
+
+            // Render Heatmap
+            renderHeatmap();
+
+            // Render Table
+            const tbody = document.getElementById('hafalan-tbody');
+            tbody.innerHTML = '';
+            if (items.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-light)">Belum ada data hafalan.</td></tr>`;
+            } else {
+                items.forEach(item => {
+                    const isDue = item.nextReview <= todayStr;
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><strong>${escapeHtml(item.title)}</strong></td>
+                        <td>${escapeHtml(item.category)}</td>
+                        <td>${item.interval} hari</td>
+                        <td>${item.easeFactor}</td>
+                        <td><span class="badge ${isDue ? 'badge-due' : 'badge-ok'}">${item.nextReview}</span></td>
+                        <td class="actions-cell">
+                            <button class="btn-danger" style="padding:4px 8px; font-size:0.75rem;" onclick="deleteHafalan(${item.id})">Hapus</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            // Setup Review Queue
+            currentQueue = dueItems;
+            if (currentQueue.length > 0) {
+                activeItem = currentQueue[0];
+                document.getElementById('review-card').style.display = 'block';
+                document.getElementById('review-title').innerText = activeItem.title;
+                document.getElementById('review-desc').innerText = `Kategori: ${activeItem.category} | Interval Saat Ini: ${activeItem.interval} hari`;
+                document.getElementById('rating-container').style.display = 'none';
+                document.getElementById('btn-reveal').style.display = 'inline-block';
+            } else {
+                document.getElementById('review-card').style.display = 'none';
+            }
+
+            // Hitung Streak
+            calculateStreak(await db.getLogs());
+        }
+
+        function revealReview() {
+            document.getElementById('btn-reveal').style.display = 'none';
+            document.getElementById('rating-container').style.display = 'grid';
+        }
+
+        async function submitReview(quality) {
+            if (!activeItem) return;
+            const updated = calculateSM2(activeItem, quality);
+            await db.updateItem(updated);
+            
+            const todayStr = new Date().toISOString().split('T')[0];
+            await db.logActivity(todayStr);
+
+            await renderUI();
+        }
+
+        async function addHafalan(e) {
+            e.preventDefault();
+            const titleInput = document.getElementById('title');
+            const categoryInput = document.getElementById('category');
+
+            const newItem = {
+                title: titleInput.value.trim(),
+                category: categoryInput.value,
+                repetition: 0,
+                interval: 0,
+                easeFactor: 2.5,
+                nextReview: new Date().toISOString().split('T')[0]
+            };
+
+            if (!newItem.title) return;
+
+            await db.addItem(newItem);
+            titleInput.value = '';
+            await renderUI();
+        }
+
+        async function deleteHafalan(id) {
+            if (confirm("Yakin ingin menghapus target hafalan ini?")) {
+                await db.deleteItem(id);
+                await renderUI();
+            }
+        }
+
+        async function renderHeatmap() {
+            const logs = await db.getLogs();
+            const logMap = {};
+            if (logs && Array.isArray(logs)) {
+                logs.forEach(l => { logMap[l.date] = l.count; });
+            }
+
+            const grid = document.getElementById('heatmap');
+            grid.innerHTML = '';
+
+            const today = new Date();
+            for (let i = 90; i >= 0; i--) {
+                const d = new Date(today);
+                d.setDate(d.getDate() - i);
+                const dateStr = d.toISOString().split('T')[0];
+                const count = logMap[dateStr] || 0;
+
+                const cell = document.createElement('div');
+                cell.className = 'heatmap-cell';
+                cell.title = `${dateStr}: ${count} aktivitas`;
+                
+                if (count > 0 && count <= 2) cell.setAttribute('data-level', '1');
+                else if (count > 2 && count <= 5) cell.setAttribute('data-level', '2');
+                else if (count > 5 && count <= 8) cell.setAttribute('data-level', '3');
+                else if (count > 8) cell.setAttribute('data-level', '4');
+
+                grid.appendChild(cell);
+            }
+        }
+
+        function calculateStreak(logs) {
+            if (!logs || logs.length === 0) {
+                document.getElementById('stat-streak').innerText = '0';
+                return;
+            }
+            const logSet = new Set(logs.map(l => l.date));
+            let streak = 0;
+            let d = new Date();
+
+            while (true) {
+                const dateStr = d.toISOString().split('T')[0];
+                if (logSet.has(dateStr)) {
+                    streak++;
+                    d.setDate(d.getDate() - 1);
+                } else {
+                    // Jika hari ini belum, cek kemarin agar streak tidak langsung putus
+                    if (streak === 0 && d.toDateString() === new Date().toDateString()) {
+                        d.setDate(d.getDate() - 1);
+                        continue;
+                    }
+                    break;
+                }
+            }
+            document.getElementById('stat-streak').innerText = streak;
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+
+        // PWA Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                const swCode = `
+                    self.addEventListener('install', (e) => {
+                        e.waitUntil(caches.open('tahfidz-v1').then(cache => cache.addAll(['./'])));
+                    });
+                    self.addEventListener('fetch', (e) => {
+                        e.respondWith(caches.match(e.request).then(res => res || fetch(e.request)));
+                    });
+                `;
+                const blob = new Blob([swCode], { type: 'text/javascript' });
+                const swUrl = URL.createObjectURL(blob);
+                navigator.serviceWorker.register(swUrl).catch(err => console.log('SW registration failed:', err));
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
