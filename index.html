@@ -69,9 +69,9 @@
         }
 
         @keyframes pulse {
-            0% { transform: scale(0.95); boxShadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-            70% { transform: scale(1); boxShadow: 0 0 0 6px rgba(16, 185, 129, 0); }
-            100% { transform: scale(0.95); boxShadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
 
         .card {
@@ -227,6 +227,28 @@
         }
         .badge-due { background: #fee2e2; color: #991b1b; }
         .badge-ok { background: #dcfce7; color: #166534; }
+
+        /* Readme Box Styles */
+        .readme-content h3 {
+            margin-bottom: 0.75rem;
+            color: var(--primary-dark);
+        }
+        .readme-content h4 {
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+        .readme-content p, .readme-content ul {
+            font-size: 0.9rem;
+            color: var(--text);
+            margin-bottom: 0.75rem;
+        }
+        .readme-content ul {
+            padding-left: 20px;
+        }
+        .readme-content li {
+            margin-bottom: 4px;
+        }
     </style>
 </head>
 <body>
@@ -238,6 +260,26 @@
                 developer : fatur62
             </div>
         </header>
+
+        <!-- Menu Baca / Panduan Penggunaan (README) di Tampilan Depan -->
+        <div class="card readme-content">
+            <h3>📖 Panduan Penggunaan & Informasi Aplikasi</h3>
+            <p><strong>TahfidzEngine SRS</strong> adalah aplikasi manajemen & penjadwalan hafalan Al-Qur'an mandiri menggunakan algoritme Spaced Repetition (SuperMemo SM-2) dengan penyimpanan lokal IndexedDB dan fitur Offline-First PWA.</p>
+            
+            <h4>🌟 Fitur Utama</h4>
+            <ul>
+                <li><strong>Algoritme SuperMemo SM-2:</strong> Menghitung kurva lupa (forgetting curve), Ease Factor, dan interval pengulangan secara otomatis.</li>
+                <li><strong>IndexedDB:</strong> Penyimpanan lokal kapasitas besar yang aman dan cepat di browser.</li>
+                <li><strong>Offline-First PWA:</strong> Dapat diinstal dan diakses penuh tanpa koneksi internet.</li>
+                <li><strong>Heatmap Konsistensi:</strong> Visualisasi grafik aktivitas harian ala kontribusi GitHub.</li>
+            </ul>
+
+            <h4>🚀 Cara Menggunakan</h4>
+            <ul>
+                <li><strong>Menambah Target:</strong> Masukkan Surah & Ayat / Halaman pada form di bawah, pilih kategori, lalu klik simpan.</li>
+                <li><strong>Muraja'ah (Review):</strong> Jika ada jadwal jatuh tempo hari ini, kartu sesi akan muncul di atas. Lakukan sambung ayat, buka detail, lalu berikan nilai (Lupa, Susah, Lancar, Sempurna).</li>
+            </ul>
+        </div>
 
         <div class="stats-grid">
             <div class="stat-card">
@@ -602,7 +644,6 @@
                     streak++;
                     d.setDate(d.getDate() - 1);
                 } else {
-                    // Jika hari ini belum, cek kemarin agar streak tidak langsung putus
                     if (streak === 0 && d.toDateString() === new Date().toDateString()) {
                         d.setDate(d.getDate() - 1);
                         continue;
