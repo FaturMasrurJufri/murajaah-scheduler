@@ -277,7 +277,7 @@
             <h4>🚀 Cara Menggunakan</h4>
             <ul>
                 <li><strong>Menambah Target:</strong> Masukkan Surah & Ayat / Halaman pada form di bawah, pilih kategori, lalu klik simpan.</li>
-                <li><strong>Muraja'ah (Review):</strong> Jika ada jadwal jatuh tempo hari ini, kartu sesi akan muncul di atas. Lakukan sambung ayat, buka detail, lalu berikan nilai (Lupa, Susah, Lancar, Sempurna).</li>
+                <li><strong>Muraja'ah (Review):</strong> Jika ada jadwal jatuh tempo, kartu sesi akan muncul di atas. Lakukan sambung ayat, buka detail, lalu berikan nilai (Lupa, Susah, Lancar, Sempurna).</li>
             </ul>
         </div>
 
@@ -288,7 +288,7 @@
             </div>
             <div class="stat-card">
                 <div class="stat-value" id="stat-due">0</div>
-                <div class="stat-label">Jatuh Tempo Hari Ini</div>
+                <div class="stat-label">Jatuh Tempo</div>
             </div>
             <div class="stat-card">
                 <div class="stat-value" id="stat-streak">0</div>
@@ -460,7 +460,15 @@
         let currentQueue = [];
         let activeItem = null;
 
-        // Algoritma SuperMemo SM-2 Core Engine
+        // Mendapatkan tanggal lokal berformat YYYY-MM-DD tanpa terpengaruh jam/timezone
+        function getLocalDateString(date = new Date()) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        // Algoritma SuperMemo SM-2 Core Engine (Menggunakan tanggal murni tanpa jam)
         function calculateSM2(item, quality) {
             let { repetition, interval, easeFactor } = item;
 
@@ -489,7 +497,7 @@
                 repetition,
                 interval,
                 easeFactor: parseFloat(easeFactor.toFixed(2)),
-                nextReview: nextReviewDate.toISOString().split('T')[0]
+                nextReview: getLocalDateString(nextReviewDate)
             };
         }
 
@@ -504,7 +512,7 @@
 
         async function renderUI() {
             const items = await db.getAllItems();
-            const todayStr = new Date().toISOString().split('T')[0];
+            const todayStr = getLocalDateString();
 
             let total = items.length;
             let dueItems = items.filter(i => i.nextReview <= todayStr);
@@ -565,7 +573,7 @@
             const updated = calculateSM2(activeItem, quality);
             await db.updateItem(updated);
             
-            const todayStr = new Date().toISOString().split('T')[0];
+            const todayStr = getLocalDateString();
             await db.logActivity(todayStr);
 
             await renderUI();
@@ -582,7 +590,7 @@
                 repetition: 0,
                 interval: 0,
                 easeFactor: 2.5,
-                nextReview: new Date().toISOString().split('T')[0]
+                nextReview: getLocalDateString()
             };
 
             if (!newItem.title) return;
@@ -613,7 +621,7 @@
             for (let i = 90; i >= 0; i--) {
                 const d = new Date(today);
                 d.setDate(d.getDate() - i);
-                const dateStr = d.toISOString().split('T')[0];
+                const dateStr = getLocalDateString(d);
                 const count = logMap[dateStr] || 0;
 
                 const cell = document.createElement('div');
@@ -639,12 +647,12 @@
             let d = new Date();
 
             while (true) {
-                const dateStr = d.toISOString().split('T')[0];
+                const dateStr = getLocalDateString(d);
                 if (logSet.has(dateStr)) {
                     streak++;
                     d.setDate(d.getDate() - 1);
                 } else {
-                    if (streak === 0 && d.toDateString() === new Date().toDateString()) {
+                    if (streak === 0 && dateStr === getLocalDateString()) {
                         d.setDate(d.getDate() - 1);
                         continue;
                     }
